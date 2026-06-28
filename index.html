@@ -501,7 +501,6 @@
 </head>
 <body>
 
-<!-- Navigation Header -->
 <header>
     <div class="logo-area">🎓 AI Study Coach</div>
     <nav>
@@ -514,7 +513,6 @@
 
 <div class="container">
 
-    <!-- TAB 1: MAIN DASHBOARD -->
     <div id="dash-panel" class="tab-panel active">
         <div class="top-welcome-row">
             <div class="join-box">
@@ -562,7 +560,6 @@
         </div>
     </div>
 
-    <!-- TAB 2: AI SUMMARY WORKSPACE (🔒 OPTION 1 SECURE INPUT WORKSPACE) -->
     <div id="summary-panel" class="tab-panel">
         <div class="summary-container">
             <div class="gemini-header-row">
@@ -573,7 +570,6 @@
                 <div class="gemini-badge">✨ Gemini Flash Engine</div>
             </div>
 
-            <!-- 🔒 Local API Token Setup Interface Box -->
             <div class="token-input-bar">
                 <label for="hf-user-token-input">🔑 Hugging Face Connection Node</label>
                 <div class="token-fields-row">
@@ -586,13 +582,11 @@
                 <button onclick="generateInitialSummary()" style="background:#4f46e5; color:white; border:none; padding:10px 20px; font-weight:bold; border-radius:8px; cursor:pointer;">Generate Master Summary</button>
             </div>
 
-            <!-- Gemini Interactive Output Card -->
             <div class="summary-response-box" id="gemini-response-card">
                 <strong>Gemini Output Node:</strong>
                 <span id="summary-display-text" style="color: #475569;">Click 'Generate Master Summary' to extract Mimi's professional profile background, or type a custom question below!</span>
             </div>
 
-            <!-- Gemini Follow-Up Modification Box -->
             <div class="gemini-prompt-bar">
                 <input type="text" id="gemini-modifier-input" placeholder="Ask Gemini about Mimi (e.g., 'what are her skills?', 'make a bulleted resume summary')...">
                 <button onclick="submitGeminiModifier()">Refine</button>
@@ -600,7 +594,6 @@
         </div>
     </div>
 
-    <!-- TAB 3: FLASHCARDS MODULE -->
     <div id="flash-panel" class="tab-panel">
         <div style="background: white; border-radius: 16px; padding: 30px; border: 2px solid #e2e8f0; text-align: center;">
             <h2 style="color:#4f46e5; margin-bottom: 15px;">📇 Active Retrieval Deck</h2>
@@ -647,7 +640,6 @@
 
 </div>
 
-<!-- MODAL CREATOR -->
 <div class="modal-overlay" id="custom-card-modal">
     <div class="modal-box">
         <div class="modal-header">
@@ -914,7 +906,7 @@ function applyCardFilters() {
 
 function changeQuestionCount() { applyCardFilters(); }
 
-UX markers validation tracking logic:
+// UX markers validation tracking logic:
 function flipCard() {
     const card = document.getElementById('flashcard');
     const wasFlipped = card.classList.contains('flipped');
