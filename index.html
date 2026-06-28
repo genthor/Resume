@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mimi's Interactive Portfolio & AI Dashboard</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body{
+            background:#f4f5f9;
+            color: #333;
+        }
+
+        /* --- Top Navigation Bar --- */
+        header {
+            background: white;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 40px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 20px;
+            color: #4f46e5;
+        }
+
+        header nav {
+            display: flex;
+            gap: 25px;
+        }
+
+        header nav a {
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        header nav a:hover, header nav a.active {
+            color: #4f46e5;
+            background: #eeeafe;
+        }
+
+        .auth-btn {
+            background: #4f46e5;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* --- Main Dashboard Container --- */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* --- Top Interactive Join/Ask Box --- */
+        .top-welcome-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .join-box {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .join-box input {
+            flex: 1;
+            padding: 14px 20px;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .join-box button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .qbit-card {
+            background: #eeeafe;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 2px solid #dcd3fd;
+        }
+
+        .qbit-card h3 {
+            color: #3730a3;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .xp-badge {
+            background: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #4f46e5;
+            display: inline-block;
+            margin-top: 10px;
+            border: 1px solid #cbd5e1;
+            text-align: center;
+        }
+
+        /* --- Categorized Section Grids --- */
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        /* --- Styled UI Cards --- */
+        .grid-card {
+            background: white;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .grid-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+            border-color: #cbd5e1;
+        }
+
+        .card-banner {
+            height: 100px;
+            background: #eef2ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            position: relative;
+        }
+
+        .card-info {
+            padding: 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-info h4 {
+            font-size: 15px;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        .card-info p {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        /* --- Control Config Panel --- */
+        .config-row {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #4f46e5;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .config-row select {
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 2px solid #cbd5e1;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .auto-toggle-btn {
+            background: #cbd5e1;
+            color: #334155;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .auto-toggle-btn.active {
+            background: #4f46e5;
+            color: white;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
+        }
+
+        /* --- 3D Flashcard Animation Engine --- */
+        .flashcard-wrapper {
+            perspective: 1000px;
+            width: 100%;
+            max-width: 480px;
+            height: 240px;
+            margin: 20px auto;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.5s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .flashcard-inner.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-front { background: #fef3c7; color: #b45309; border: 2px solid #fde68a; }
+        .card-back { background: #ecfdf5; color: #065f46; border: 2px solid #a7f3d0; transform: rotateY(180deg); }
+
+        .flashcard-inner.ai-auto-mode .card-front {
+            background: #f0f9ff;
+            color: #0369a1;
+            border: 2px solid #bae6fd;
+        }
+
+        .card-nav { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 15px; }
+        .nav-btn { background: #4f46e5; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .roll-btn { background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 15px; }
+        
+        .open-creator-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+
+        .ai-badge-status {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 10px;
+            display: none;
+            font-weight: bold;
+        }
+
+        /* --- ✨ Gemini Summary Workspace Elements --- */
+        .summary-container {
+            background: white;
+            border-radius: 16px;
+            padding: 35px;
+            border: 2px solid #e2e8f0;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.01);
+        }
+
+        .gemini-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .gemini-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* 🔐 Token Input Configuration Bar */
+        .token-input-bar {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+        }
+
+        .token-input-bar label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #be123c;
+        }
+
+        .token-fields-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .token-fields-row input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #fda4af;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .token-fields-row input:focus {
+            border-color: #f43f5e;
+        }
+
+        .summary-response-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: left;
+            line-height: 1.6;
+            color: #334155;
+            font-size: 15px;
+            margin-bottom: 25px;
+            min-height: 120px;
+            transition: all 0.3s ease;
+        }
+
+        .summary-response-box.updated {
+            border-color: #3b82f6;
+            background: #f0f5ff;
+        }
+
+        .summary-response-box strong {
+            color: #1e293b;
+            font-size: 16px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Gemini Chat Adjustment Prompt Input Container */
+        .gemini-prompt-bar {
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 2px solid #cbd5e1;
+            border-radius: 30px;
+            padding: 6px 6px 6px 20px;
+            transition: 0.2s;
+        }
+
+        .gemini-prompt-bar:focus-within {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        .gemini-prompt-bar input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            color: #334155;
+            background: transparent;
+        }
+
+        .gemini-prompt-bar button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .gemini-prompt-bar button:hover { background: #3730a3; }
+
+        /* --- Blurry/Dark Modal Overlay --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.open { opacity: 1; pointer-events: auto; }
+        .modal-box {
+            background: white;
+            width: 90%;
+            max-width: 850px;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.open .modal-box { transform: scale(1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .close-modal-btn { background: none; border: none; font-size: 24px; color: #94a3b8; cursor: pointer; }
+        .creator-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+        .creator-pane { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .creator-pane label { font-size: 13px; font-weight: bold; color: #64748b; text-transform: uppercase; text-align: left; }
+        .creator-pane textarea { width: 100%; height: 140px; padding: 14px; border: 1px solid #cbd5e1; border-radius: 8px; resize: none; font-size: 15px; outline: none; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 12px; }
+        .cancel-btn { background: #f1f5f9; color: #64748b; border: none; padding: 12px 20px; font-weight: bold; border-radius: 8px; cursor: pointer; }
+        .save-custom-btn { background: #4f46e5; color: white; border: none; padding: 12px 24px; font-size: 14px; font-weight: bold; border-radius: 8px; cursor: pointer; }
+
+        /* Tab Display Handling */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+    </style>
+</head>
+<body>
+
+<!-- Navigation Header -->
+<header>
+    <div class="logo-area">🎓 AI Study Coach</div>
+    <nav>
+        <a href="#" id="nav-dash" class="active" onclick="switchTab('dash-panel')">Home</a>
+        <a href="#" id="nav-summary" onclick="switchTab('summary-panel')">AI Summary</a>
+        <a href="#" id="nav-flash" onclick="switchTab('flash-panel')">Flashcards</a>
+    </nav>
+    <a href="#" class="auth-btn">Logout</a>
+</header>
+
+<div class="container">
+
+    <!-- TAB 1: MAIN DASHBOARD -->
+    <div id="dash-panel" class="tab-panel active">
+        <div class="top-welcome-row">
+            <div class="join-box">
+                <input type="text" placeholder="Ask my interactive resume anything...">
+                <button onclick="switchTab('summary-panel')">Ask AI</button>
+            </div>
+            <div class="qbit-card">
+                <div>
+                    <h3>Active Progress</h3>
+                    <p style="font-size:13px; color:#666;">Level up daily</p>
+                </div>
+                <div class="xp-badge">⚡ <span id="xp-display">100</span> XP</div>
+            </div>
+        </div>
+
+        <div class="section-title">✨ Templates & Tools</div>
+        <div class="grid-layout">
+            <div class="grid-card" onclick="triggerUpload()">
+                <div class="card-banner" style="background: #e0f2fe;">📄</div>
+                <div class="card-info">
+                    <h4>Upload Study Notes</h4>
+                    <p>Click to attach PDFs or texts from your library.</p>
+                    <input type="file" id="file-picker" style="display:none;" onchange="handleFile(event)">
+                </div>
+            </div>
+            <div class="grid-card" onclick="switchTab('summary-panel')">
+                <div class="card-banner" style="background: #f0fdf4;">🤖</div>
+                <div class="card-info">
+                    <h4>AI Summary</h4>
+                    <p>Process your active files into notes.</p>
+                </div>
+            </div>
+            <div class="grid-card" onclick="switchTab('flash-panel')">
+                <div class="card-banner" style="background: #fffbeb;">📇</div>
+                <div class="card-info">
+                    <h4>Flashcard Sets</h4>
+                    <p>Flip through active recall modules.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">📚 Saved Study Sets</div>
+        <div class="grid-layout" id="saved-files-container">
+            <p id="no-files-text" style="color: #888; grid-column: 1/-1; padding: 10px 0;">No saved files found. Upload a file above to persist data inside your library!</p>
+        </div>
+    </div>
+
+    <!-- TAB 2: AI SUMMARY WORKSPACE (🔒 OPTION 1 SECURE INPUT WORKSPACE) -->
+    <div id="summary-panel" class="tab-panel">
+        <div class="summary-container">
+            <div class="gemini-header-row">
+                <div>
+                    <h2 style="color:#1e293b; font-size:22px; margin-bottom:4px;">🤖 Gemini Summary Hub</h2>
+                    <p style="color:#64748b; font-size:14px;">Ask Gemini custom prompts to review or transform Mimi's background information live.</p>
+                </div>
+                <div class="gemini-badge">✨ Gemini Flash Engine</div>
+            </div>
+
+            <!-- 🔒 Local API Token Setup Interface Box -->
+            <div class="token-input-bar">
+                <label for="hf-user-token-input">🔑 Hugging Face Connection Node</label>
+                <div class="token-fields-row">
+                    <input type="password" id="hf-user-token-input" placeholder="Paste your hf_ token here to unlock live features...">
+                </div>
+                <p style="font-size: 11px; color: #e11d48; margin: 0;">Your token is processed directly in your browser tab. It is completely safe and never uploaded to GitHub servers.</p>
+            </div>
+            
+            <div style="text-align: left; margin-bottom: 20px;">
+                <button onclick="generateInitialSummary()" style="background:#4f46e5; color:white; border:none; padding:10px 20px; font-weight:bold; border-radius:8px; cursor:pointer;">Generate Master Summary</button>
+            </div>
+
+            <!-- Gemini Interactive Output Card -->
+            <div class="summary-response-box" id="gemini-response-card">
+                <strong>Gemini Output Node:</strong>
+                <span id="summary-display-text" style="color: #475569;">Click 'Generate Master Summary' to extract Mimi's professional profile background, or type a custom question below!</span>
+            </div>
+
+            <!-- Gemini Follow-Up Modification Box -->
+            <div class="gemini-prompt-bar">
+                <input type="text" id="gemini-modifier-input" placeholder="Ask Gemini about Mimi (e.g., 'what are her skills?', 'make a bulleted resume summary')...">
+                <button onclick="submitGeminiModifier()">Refine</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: FLASHCARDS MODULE -->
+    <div id="flash-panel" class="tab-panel">
+        <div style="background: white; border-radius: 16px; padding: 30px; border: 2px solid #e2e8f0; text-align: center;">
+            <h2 style="color:#4f46e5; margin-bottom: 15px;">📇 Active Retrieval Deck</h2>
+
+            <div class="config-row">
+                <div id="manual-select-group" style="display: flex; align-items: center; gap: 10px;">
+                    <label>Set Size:</label>
+                    <select id="question-count" onchange="changeQuestionCount()">
+                        <option value="3">3 Cards</option>
+                        <option value="5">5 Cards</option>
+                        <option value="10">10 Cards</option>
+                    </select>
+                </div>
+                <div style="color: #cbd5e1;">|</div>
+                <button id="auto-mode-btn" class="auto-toggle-btn" onclick="toggleAIMode()">🤖 Auto (AI Choice)</button>
+            </div>
+
+            <div class="flashcard-wrapper">
+                <div class="flashcard-inner" id="flashcard" onclick="flipCard()">
+                    <div class="card-front">
+                        <div class="ai-badge-status" id="ai-badge">✨ AI High-Yield Pick</div>
+                        <h3>Question</h3>
+                        <p id="question-text">Load up a study file on the home dashboard to generate structural recall questions!</p>
+                    </div>
+                    <div class="card-back">
+                        <h3>Answer</h3>
+                        <p id="answer-text">Upload documents to verify key insights and claim point marks!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-nav">
+                <button class="nav-btn" onclick="prevCard()">◀ Prev</button>
+                <span id="card-index" style="font-weight:bold; color:#4f46e5;">0 / 0</span>
+                <button class="nav-btn" onclick="nextCard()">Next ▶</button>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                <button class="roll-btn" style="margin-top:0;" onclick="rollShuffleCards()">🎲 Roll Order</button>
+                <button class="open-creator-btn" style="margin-top:0;" onclick="openModal()">➕ Add Custom Flashcard</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAL CREATOR -->
+<div class="modal-overlay" id="custom-card-modal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>✍️ Create Custom Flashcard</h3>
+            <button class="close-modal-btn" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="creator-grid">
+            <div class="creator-pane">
+                <label>Card Front (Question / Term)</label>
+                <textarea id="custom-front-text" placeholder="Type your custom question or term here..."></textarea>
+            </div>
+            <div class="creator-pane">
+                <label>Card Back (Answer / Definition)</label>
+                <textarea id="custom-back-text" placeholder="Type the core answer or solution info here..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+            <button class="save-custom-btn" onclick="saveCustomCard()">💾 Save Custom Card</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentXP = 100;
+let savedFilesList = [];
+let activeFileName = "";
+let currentCardIndex = 0;
+let masterCardsPool = [];
+let activeDisplayCardsList = [];
+let isAIModeActive = false;
+
+let standardSummaryBaseText = "📄 Profile Extract: Mimi is an 18-year-old Grade 12 STEM student who builds high-quality, interactive web dashboards and applications. Her core competencies center around front-end user experience layouts (HTML/CSS/JS), structured data analytics cleaning workflows, and geographic layout mapping designs using QGIS software. Type a prompt below to have Gemini adjust this summary context!";
+
+const fallbackCards = [{ q: "Load up a study file on the home dashboard to generate structural recall questions!", a: "Upload documents to verify key insights!" }];
+
+window.onload = function() {
+    if(localStorage.getItem('studyXP')) {
+        currentXP = parseInt(localStorage.getItem('studyXP'));
+        document.getElementById('xp-display').innerText = currentXP;
+    }
+    if(localStorage.getItem('savedFiles')) {
+        savedFilesList = JSON.parse(localStorage.getItem('savedFiles'));
+        renderSavedFiles();
+    }
+    if(localStorage.getItem('customFlashcards')) {
+        const storedCustoms = JSON.parse(localStorage.getItem('customFlashcards'));
+        if(storedCustoms.length > 0 && masterCardsPool.length === 0) {
+            masterCardsPool = storedCustoms;
+            applyCardFilters();
+        }
+    }
+    
+    // Auto-load token from local storage if the user saved it before
+    if(localStorage.getItem('savedHFToken')) {
+        document.getElementById('hf-user-token-input').value = localStorage.getItem('savedHFToken');
+    }
+    
+    updateCardUI();
+};
+
+/* --- 🌐 LIVE HUGGING FACE AI INTEGRATION --- */
+function generateInitialSummary() {
+    const displayElement = document.getElementById('summary-display-text');
+    const responseCard = document.getElementById('gemini-response-card');
+    responseCard.classList.remove('updated');
+    displayElement.innerText = standardSummaryBaseText;
+}
+
+async function submitGeminiModifier() {
+    const inputField = document.getElementById('gemini-modifier-input');
+    const displayElement = document.getElementById('summary-display-text');
+    const responseCard = document.getElementById('gemini-response-card');
+    const userPrompt = inputField.value.trim();
+
+    // 🔑 Dynamically fetch token from page entry input field
+    const tokenInput = document.getElementById('hf-user-token-input').value.trim();
+
+    if (!userPrompt) return;
+
+    if (!tokenInput) {
+        alert("Please paste your Hugging Face Access Token (starting with hf_) into the top red input field first to activate the AI layout engine features!");
+        return;
+    }
+
+    // Persist token across page refreshes safely inside browser local storage
+    localStorage.setItem('savedHFToken', tokenInput);
+
+    // Show a loading screen inside the card component
+    responseCard.classList.add('updated');
+    displayElement.innerText = "✨ Gemini is analyzing your request...";
+
+    try {
+        const response = await fetch("https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${tokenInput}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                inputs: `<|system|>\nYou are an advanced conversational AI built directly into Mimi's resume portfolio layout. Mimi is an impressive 18-year-old Grade 12 STEM student proficient in HTML, CSS, JavaScript, frontend dashboard configuration, web aesthetics, data cleaning datasets, and geographic mapping tracking maps using QGIS. Answer the user prompt professionally, intelligently, and clearly to impress hiring managers or recruiters reviewing her profile.\n<|user|>\n${userPrompt}\n<|assistant|>`
+            })
+        });
+
+        const data = await response.json();
+        
+        if (data && data[0] && data[0].generated_text) {
+            const rawText = data[0].generated_text;
+            const cleanText = rawText.split("<|assistant|>").pop().trim();
+            displayElement.innerText = cleanText;
+        } else if (data.error && data.error.includes("loading")) {
+            displayElement.innerText = "🤖 The AI node is currently booting up on Hugging Face servers. Please click 'Refine' again in 15 seconds!";
+        } else {
+            displayElement.innerText = "🤖 The AI endpoint returned a blank answer. Make sure your Hugging Face Access Token configuration is correct!";
+        }
+    } catch (error) {
+        displayElement.innerText = "❌ Oops! Something went wrong connecting to the live AI engine. Make sure your token is typed properly and active.";
+        console.error(error);
+    }
+
+    inputField.value = ""; // Clear out input bar automatically
+}
+
+/* --- Modal Logic Controls --- */
+function openModal() { document.getElementById('custom-card-modal').classList.add('open'); }
+function closeModal() {
+    document.getElementById('custom-card-modal').classList.remove('open');
+    document.getElementById('custom-front-text').value = "";
+    document.getElementById('custom-back-text').value = "";
+}
+
+/* Tab Display Handling */
+function switchTab(panelId) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('header nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById(panelId).classList.add('active');
+    
+    if(panelId === 'dash-panel') document.getElementById('nav-dash').classList.add('active');
+    if(panelId === 'summary-panel') document.getElementById('nav-summary').classList.add('active');
+    if(panelId === 'flash-panel') document.getElementById('nav-flash').classList.add('active');
+
+    document.getElementById('flashcard').classList.remove('flipped');
+}
+
+function triggerUpload() { document.getElementById('file-picker').click(); }
+
+function handleFile(event) {
+    const file = event.target.files[0];
+    if (file) {
+        activeFileName = file.name;
+        if (!savedFilesList.includes(activeFileName)) {
+            savedFilesList.push(activeFileName);
+            localStorage.setItem('savedFiles', JSON.stringify(savedFilesList));
+        }
+        renderSavedFiles();
+        generateFlashcardsFromFile(activeFileName);
+        alert(`Successfully uploaded and saved: ${activeFileName}!`);
+    }
+}
+
+function renderSavedFiles() {
+    const container = document.getElementById('saved-files-container');
+    const noFilesText = document.getElementById('no-files-text');
+    if (savedFilesList.length > 0 && noFilesText) noFilesText.remove();
+
+    container.innerHTML = "";
+    savedFilesList.forEach(name => {
+        const itemCard = document.createElement('div');
+        itemCard.className = "grid-card";
+        itemCard.onclick = () => {
+            activeFileName = name;
+            generateFlashcardsFromFile(name);
+            alert(`Switched active study target to: ${name}`);
+        };
+        itemCard.innerHTML = `
+            <div class="card-banner" style="background:#eeeafe; font-size:24px;">📁</div>
+            <div class="card-info">
+                <h4 style="text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${name}</h4>
+                <p>Click to load into modules</p>
+            </div>
+        `;
+        container.appendChild(itemCard);
+    });
+}
+
+function generateFlashcardsFromFile(fileName) {
+    const nameLower = fileName.toLowerCase();
+    let importedPool = [];
+    
+    if(nameLower.includes('chem') || nameLower.includes('redox') || nameLower.includes('titration')) {
+        importedPool = [
+            { q: "How do you check electron counts inside redox equations?", a: "By running reduction and oxidation half-reactions to balance total charges.", premium: true },
+            { q: "What color state transformation happens to phenolphthalein indicators under alkali bases?", a: "It switches into a brilliant bright pink color signature.", premium: true },
+            { q: "What solid element acts as a base standard in KHP titration assays?", a: "Potassium Hydrogen Phthalate (KHP) serves as the primary solid analytical standard.", premium: false }
+        ];
+    } else {
+        importedPool = [
+            { q: "How do gas law metrics shift parameters simultaneously?", a: "Pressure, volume, and absolute temperature parameters lock and balance equations collectively.", premium: true },
+            { q: "What parameters are held constant under standard Boyle's Law?", a: "Temperature (T) and absolute particle count vectors stay uniform.", premium: true }
+        ];
+    }
+
+    const storedCustoms = localStorage.getItem('customFlashcards') ? JSON.parse(localStorage.getItem('customFlashcards')) : [];
+    masterCardsPool = [...importedPool, ...storedCustoms];
+    applyCardFilters();
+}
+
+function saveCustomCard() {
+    const frontText = document.getElementById('custom-front-text').value.trim();
+    const backText = document.getElementById('custom-back-text').value.trim();
+
+    if(frontText === "" || backText === "") {
+        alert("Please fill out both fields!");
+        return;
+    }
+
+    const customCardItem = { q: frontText, a: backText, premium: true };
+    masterCardsPool.unshift(customCardItem); 
+
+    const globalCustomsList = localStorage.getItem('customFlashcards') ? JSON.parse(localStorage.getItem('customFlashcards')) : [];
+    globalCustomsList.unshift(customCardItem);
+    localStorage.setItem('customFlashcards', JSON.stringify(globalCustomsList));
+
+    closeModal();
+    applyCardFilters();
+}
+
+function toggleAIMode() {
+    if(masterCardsPool.length === 0) {
+        alert("Load a file entry first!");
+        return;
+    }
+    isAIModeActive = !isAIModeActive;
+    const autoBtn = document.getElementById('auto-mode-btn');
+    const badge = document.getElementById('ai-badge');
+    const innerCard = document.getElementById('flashcard');
+    const selectDrop = document.getElementById('question-count');
+
+    if(isAIModeActive) {
+        autoBtn.classList.add('active');
+        badge.style.display = 'block';
+        innerCard.classList.add('ai-auto-mode');
+        selectDrop.disabled = true;
+    } else {
+        autoBtn.classList.remove('active');
+        badge.style.display = 'none';
+        innerCard.classList.remove('ai-auto-mode');
+        selectDrop.disabled = false;
+    }
+    applyCardFilters();
+}
+
+function applyCardFilters() {
+    if (masterCardsPool.length === 0) return;
+    if (isAIModeActive) {
+        activeDisplayCardsList = masterCardsPool.filter(card => card.premium === true);
+    } else {
+        const limit = parseInt(document.getElementById('question-count').value);
+        activeDisplayCardsList = masterCardsPool.slice(0, limit);
+    }
+    currentCardIndex = 0;
+    updateCardUI();
+}
+
+function changeQuestionCount() { applyCardFilters(); }
+
+UX markers validation tracking logic:
+function flipCard() {
+    const card = document.getElementById('flashcard');
+    const wasFlipped = card.classList.contains('flipped');
+    card.classList.toggle('flipped');
+
+    if(!wasFlipped && masterCardsPool.length > 0) {
+        currentXP += 50;
+        document.getElementById('xp-display').innerText = currentXP;
+        localStorage.setItem('studyXP', currentXP);
+    }
+}
+
+function updateCardUI() {
+    const activeList = masterCardsPool.length > 0 ? activeDisplayCardsList : fallbackCards;
+    const currentCard = activeList[currentCardIndex];
+    document.getElementById('question-text').innerText = currentCard.q;
+    document.getElementById('answer-text').innerText = currentCard.a;
+    document.getElementById('card-index').innerText = masterCardsPool.length > 0 ? `${currentCardIndex + 1} / ${activeList.length}` : "0 / 0";
+}
+
+function nextCard() {
+    const activeList = masterCardsPool.length > 0 ? activeDisplayCardsList : fallbackCards;
+    if(masterCardsPool.length === 0) return;
+    document.getElementById('flashcard').classList.remove('flipped');
+    setTimeout(() => { currentCardIndex = (currentCardIndex + 1) % activeList.length; updateCardUI(); }, 150);
+}
+
+function prevCard() {
+    const activeList = masterCardsPool.length > 0 ? activeDisplayCardsList : fallbackCards;
+    if(masterCardsPool.length === 0) return;
+    document.getElementById('flashcard').classList.remove('flipped');
+    setTimeout(() => { currentCardIndex = (currentCardIndex - 1 + activeList.length) % activeList.length; updateCardUI(); }, 150);
+}
+
+function rollShuffleCards() {
+    if(masterCardsPool.length === 0) return;
+    document.getElementById('flashcard').classList.remove('flipped');
+    setTimeout(() => {
+        for (let i = activeDisplayCardsList.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [activeDisplayCardsList[i], activeDisplayCardsList[j]] = [activeDisplayCardsList[j], activeDisplayCardsList[i]];
+        }
+        currentCardIndex = 0;
+        updateCardUI();
+    }, 150);
+}
+</script>
+
+</body>
+</html>
