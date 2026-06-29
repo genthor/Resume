@@ -453,7 +453,7 @@
         }
         .gemini-prompt-bar button:hover { background: #3730a3; }
 
-        /* --- Blurry/Dark Modal Overlay --- */
+        /* --- Blurry/Dark Modal Overlay Fix --- */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -463,16 +463,15 @@
             background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            display: flex;
+            display: none; /* FIX: Set to none initially so it doesn't block clicks */
             justify-content: center;
             align-items: center;
             z-index: 1000;
             opacity: 0;
-            pointer-events: none;
             transition: opacity 0.3s ease;
         }
 
-        .modal-overlay.open { opacity: 1; pointer-events: auto; }
+        .modal-overlay.open { display: flex; opacity: 1; } /* FIX: Toggle flex on open status */
         .modal-box {
             background: white;
             width: 90%;
@@ -504,9 +503,9 @@
 <header>
     <div class="logo-area">🎓 AI Study Coach</div>
     <nav>
-        <a href="#" id="nav-dash" class="active" onclick="switchTab('dash-panel')">Home</a>
-        <a href="#" id="nav-summary" onclick="switchTab('summary-panel')">AI Summary</a>
-        <a href="#" id="nav-flash" onclick="switchTab('flash-panel')">Flashcards</a>
+        <a href="javascript:void(0);" id="nav-dash" class="active" onclick="switchTab('dash-panel')">Home</a>
+        <a href="javascript:void(0);" id="nav-summary" onclick="switchTab('summary-panel')">AI Summary</a>
+        <a href="javascript:void(0);" id="nav-flash" onclick="switchTab('flash-panel')">Flashcards</a>
     </nav>
     <a href="#" class="auth-btn">Logout</a>
 </header>
@@ -906,7 +905,6 @@ function applyCardFilters() {
 
 function changeQuestionCount() { applyCardFilters(); }
 
-// UX markers validation tracking logic:
 function flipCard() {
     const card = document.getElementById('flashcard');
     const wasFlipped = card.classList.contains('flipped');
